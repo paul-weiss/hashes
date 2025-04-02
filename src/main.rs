@@ -1,5 +1,4 @@
 use clap::{command, Arg};
-use sha2::Sha256;
 use crypto::digest::Digest;
 use crypto::sha2::Sha256;
 
@@ -16,7 +15,16 @@ fn main() {
     let mut hasher = Sha256::new();
     hasher.input_str(s.unwrap());
     let hex = hasher.result_str();
-    println!("sh256(s) = {}", hex);
+    println!("sh256(s) = {}", &hex);
+    println!("first 25 = {}", truncate(&hex, 25));
+    println!("first 8  = {}", truncate(&hex, 8));
+}
+
+fn truncate(s: &str, max_chars: usize) -> &str {
+    match s.char_indices().nth(max_chars) {
+        None => s,
+        Some((idx, _)) => &s[..idx],
+    }
 }
 
 #[cfg(test)]
