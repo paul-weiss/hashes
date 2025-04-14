@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SHA256 Calculator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 40px auto;
+            padding: 20px;
+        }
+        h1 {
+            color: #333;
+        }
+        .input-group {
+            margin: 20px 0;
+        }
+        input {
+            width: 100%;
+            padding: 8px;
+            margin-top: 5px;
+            font-size: 16px;
+        }
+        #output {
+            background: #f5f5f5;
+            padding: 10px;
+            word-break: break-all;
+            font-family: monospace;
+            margin-top: 5px;
+        }
+    </style>
+</head>
+<body>
+    <h1>SHA256</h1>
+    
+    <div class="input-group">
+        <label for="input">Input:</label><br>
+        <input type="text" id="input" placeholder="Type something...">
+    </div>
+
+    <div class="input-group">
+        <label>Output:</label>
+        <div id="output"></div>
+    </div>
+
+    <script>
+        async function calculateSHA256(message) {
+            // Convert the message to a Uint8Array
+            const msgBuffer = new TextEncoder().encode(message);
+            
+            // Generate the hash
+            const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
+            
+            // Convert the hash to hex string
+            const hashArray = Array.from(new Uint8Array(hashBuffer));
+            const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+            
+            return hashHex;
+        }
+
+        // Get DOM elements
+        const input = document.getElementById('input');
+        const output = document.getElementById('output');
+
+        // Add event listener for input changes
+        input.addEventListener('input', async (e) => {
+            const text = e.target.value;
+            if (text) {
+                const hash = await calculateSHA256(text);
+                output.textContent = hash;
+            } else {
+                output.textContent = '';
+            }
+        });
+    </script>
+</body>
+</html> 
